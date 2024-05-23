@@ -1,0 +1,26 @@
+{
+    "name": "tech-store-backend",
+    "version": "1.0.0",
+    "description": "Backend for a tech store e-commerce website",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "main.js": "node main.js"
+    },
+    "keywords": [
+        "tech",
+        "store",
+        "ecommerce",
+        "backend",
+        "node",
+        "express",
+        "mongodb"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "dependencies": {
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "mongoose": "^6.0.15"
+    }
+}
