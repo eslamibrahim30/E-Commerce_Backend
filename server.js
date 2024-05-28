@@ -13,9 +13,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api/auth', router);
-if (connectDB) {
+if (connectDB()) {
   app.listen(port, host, () => {
     console.log(`Server running on port ${port}`);
   });
 }
+
 module.exports = app;
