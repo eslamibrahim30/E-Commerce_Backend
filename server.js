@@ -1,9 +1,9 @@
-import express from 'express';
+const express = require('express');
 const dotenv = require('dotenv').config();
 const router = require('./routes');
 const cookieParser = require('cookie-parser')
 
-import connectDB from './utils/db';
+const connectDB = require('./utils/db');
 
 const app = express();
 
