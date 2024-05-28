@@ -2,12 +2,12 @@ const User = require('../models/User');
 const { authcheck } = require('../middlewares/auth');
 const bcrypt = require('bcryptjs');
 
-const handlserrors = (error) => {
-  if (error.code === 11000) {
-    rerurn('email Already exit')
-  }
-  throw(error.message);
-};
+// const handlserrors = (error) => {
+//   if (error.code === 11000) {
+//     rerurn('email Already exit')
+//   }
+//   throw(error.message);
+// };
 
 // Create a new user
 const createUser = async (req, res) => {
@@ -24,15 +24,15 @@ const createUser = async (req, res) => {
     } 
     const user1 = await User.findOne({ email });
     if (user1) {
-      return res.status(400).json({ error: 'Email already exists' });
+      return res.status(400).json({ error: 'Email already exists' , user1});
     }
     const user = new User({ name, email, password });
     await user.save();
     res.status(200).json({ id: user._id, email: user.email, name: user.name});
     }
-    else (error) => {
-      handlserrors(error);
-  }
+  //   else (error) => {
+  //     handlserrors(error);
+  // }
 };
 
 // Get all users
@@ -78,15 +78,15 @@ const loginUser = async (req, res) => {
 // Update user by ID
 const updateUser = async (req, res) => {
   if (authcheck) {
-    const { id, email, newData } = req.body
-    if (!newData) {
-      return res.status(400).json({ error: 'User ID and new data are required' });
+    const { _id, email,newData } = req.body
+    if (!_id) {
+      return res.status(400).json({ error: 'User ID and email are required' });
     }
-    const user = await User.findOneAndUpdate({ _id: id }, email, newData, { new: true });
+    const user = await User.findOneAndUpdate({ _id, email}, newData, { new: true });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    return user;
+    return res.status(200).json(user);
   }
   //  catch (error) {
   //   handlserrors(error);
