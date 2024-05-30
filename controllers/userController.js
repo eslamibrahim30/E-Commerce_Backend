@@ -66,8 +66,8 @@ const getUsers = async (req, res) => {
 
 // login
 const loginUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !password || !email) {
+  const { email, password } = req.body;
+  if ( !password || !email) {
     return res.status(400).json({
       message: 'missing data',
     });
