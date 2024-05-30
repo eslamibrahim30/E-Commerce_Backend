@@ -70,9 +70,6 @@ const loginUser = async (req, res) => {
   };
   
 };
-  //  else {
-  //   handlserrors(error);
-  // }
 
 
 // Update user by ID
@@ -88,9 +85,6 @@ const updateUser = async (req, res) => {
     }
     return user;
   }
-  //  catch (error) {
-  //   handlserrors(error);
-  // }
 };
 
 // Delete user by ID
@@ -108,11 +102,6 @@ const deleteUser = async (req, res) => {
       await User.deleteOne(deluser);
       res.status(201).send({ message: 'User successfully deleted' })
     };    
-    // .catch(error =>
-    //   res
-    //     .status(400)
-    //     .json({ message: 'An error occurred', error: error.message })
-    // )
   };
 };
 
