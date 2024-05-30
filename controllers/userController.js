@@ -91,23 +91,24 @@ const loginUser = async (req, res) => {
 
 // Update user by ID
 const updateUser = async (req, res) => {
-    const { _id, email, newData } = req.body;
+    const { _id, newData } = req.body;
     if (!_id) {
-        return res.status(400).json({ error: 'User ID are required' });
+        return res.status(400).json({ error: 'User ID is required' });
     }
-    const user = await User.findOneAndUpdate({ _id, email }, newData, { new: true });
+    const user = await User.findOneAndUpdate({ _id }, newData, { new: true });
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
     return res.status(200).json(user);
 };
+
 // Delete user by ID
 const deleteUser = async (req, res) => {
-    const { _id, email } = req.body;
-    if (!_id || !email) {
-        return res.status(400).json({ error: 'User ID and email are required' });
+    const { _id } = req.body;
+    if (!_id) {
+        return res.status(400).json({ error: 'User ID is required' });
     }
-    const deluser = await User.findOne({ _id, email });
+    const deluser = await User.findOne({ _id });
     if (!deluser) {
         return res.status(400).json({ error: 'User not found' });
     }
