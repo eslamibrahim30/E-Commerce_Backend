@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
     postalCode: { type: String },
     country: { type: String },
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+  },
   phoneNumber: { type: String },
 });
 
@@ -43,10 +48,10 @@ userSchema.methods.validatePassword = async function validatePassword(data) {
 };
 userSchema.methods.generateAuthToken = async function(req, res) { 
   const user = this;
-  const token = jwt.sign({_id:user._id.toHexString()}, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ _id:user._id.toHexString(), role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
   const salt = await bcrypt.genSalt(10);
   const hashedToken = await bcrypt.hash(token, salt);
-  const expiresAt = new Date(Date.now() + 3600000); // 1 hour from now
+  const expiresAt = new Date(Date.now() + 3600000);
   let tokenDoc = await Token.findOne({ _id: user._id });
   if (tokenDoc) {
     tokenDoc.token = hashedToken;

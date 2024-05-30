@@ -1,6 +1,7 @@
 const express = require('express');
+
 const router = express.Router();
-const { authcheck } = require('../middlewares/auth'); 
+const { verifyAdmin, authcheck } = require('../middlewares/auth');
 const { createUser, updateUser, deleteUser, getUsers, loginUser } = require('../controllers/userController');
 const { addItemToCart, getCartItems, removeItemFromCart } = require('../controllers/cartController');
 const { createOrder, getOrdersByUser } = require('../controllers/orderController');
@@ -8,7 +9,7 @@ const { createProduct, updateProduct, deleteProduct, getProducts } = require('..
 
 router.post('/user/create', createUser);
 router.post('/login', loginUser);
-router.get('/users', authcheck, getUsers);
+router.get('/users', verifyAdmin, getUsers);
 router.put('/user/update', authcheck, updateUser);
 router.delete('/user/delete', authcheck, deleteUser);
 
@@ -23,6 +24,5 @@ router.post('cart/remove', authcheck, removeItemFromCart);
 
 router.post('/order/create', authcheck, createOrder);
 router.get('/orders', authcheck, getOrdersByUser);
-
 
 module.exports = router;
