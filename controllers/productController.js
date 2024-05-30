@@ -4,33 +4,29 @@ const { authcheck } = require('../middlewares/auth');
 // Create a new product
 const createProduct = async (req, res) => {
     if (authcheck) {
-        const { name, description, price, image, catogory, stock } = req.body;
+        const { name, description, price, image, category, stock } = req.body;
         if (!name) {
             res.status(400).json({ error: 'Missing name' });
         }
         if (!price) {
             res.status(400).json({ error: 'Missing price' });
         }
-        if (!catogory) {
+        if (!category) {
             res.status(400).json({ error: 'Missing category' });
         }
         if (!stock) {
             res.status(400).json({ error: 'Missing stock' });
         }
-        const product1 = await product.findOne({ email });
-        if (product1) {
-            return res.status(400).json({ error: 'Email already exists' });
-        }
-        const product = new product({ name, description, price, image, catogory, stock });
-        await product.save();
+        const product1 = new product({ name, description, price, image, category, stock });
+        await product1.save();
         res.status(200).json({ 
-            id: product._id,
-            name: product.name,
-            description: product.description,
-            price: product.price,
-            image: product.image,
-            catogory: product.catogory,
-            stock: product.stock
+            id: product1._id,
+            name: product1.name,
+            description: product1.description,
+            price: product1.price,
+            image: product1.image,
+            category: product1.catogory,
+            stock: product1.stock
         });
     }
     else (error) => {
