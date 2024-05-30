@@ -11,7 +11,7 @@ router.post('/user/create', createUser);
 router.post('/login', loginUser);
 router.get('/users', verifyAdmin, getUsers);
 router.put('/user/update', authcheck, updateUser);
-router.delete('/user/delete', authcheck, deleteUser);
+router.delete('/user/delete',  authcheck, deleteUser);
 
 router.post('/product/create', createProduct);
 router.get('/products', getProducts);
