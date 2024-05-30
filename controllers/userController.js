@@ -11,28 +11,23 @@ const handlserrors = (error) => {
 
 // Create a new user
 const createUser = async (req, res) => {
-  if (authcheck) {
     const { name, email, password } = req.body;
+    if (!name) {
+        res.status(400).json({ error: 'Missing name' });
+    }
     if (!email) {
-      res.status(400).json({ error: 'Missing email' });
+        res.status(400).json({ error: 'Missing email' });
     }
     if (!password) {
-      res.status(400).json({ error: 'Missing password' });
+        res.status(400).json({ error: 'Missing password' });
     }
-    if (!name) {
-      res.status(400).json({ error: 'Missing password' });
-    } 
     const user1 = await User.findOne({ email });
     if (user1) {
-      return res.status(400).json({ error: 'Email already exists' });
+        return res.status(400).json({ error: 'Email already exists' });
     }
     const user = new User({ name, email, password });
     await user.save();
     res.status(200).json({ id: user._id, email: user.email, name: user.name});
-    }
-    else (error) => {
-      handlserrors(error);
-  }
 };
 
 // Get all users
@@ -45,11 +40,11 @@ const getUsers = async (req, res) => {
   }
 };
 
-// login
+// User login
 const loginUser = async (req, res) => {
   if (authcheck) {
-    const { name, email, password } = req.body;
-    if (!name || !password || !email) {
+    const { email, password } = req.body;
+    if ( !password || !email) {
       return res.status(400).json({
         message: 'missing data',
       })
@@ -66,13 +61,8 @@ const loginUser = async (req, res) => {
         res.status(400).json({ message: 'password not match' });
       }
     }
-
   };
-  
 };
-  //  else {
-  //   handlserrors(error);
-  // }
 
 
 // Update user by ID
@@ -88,9 +78,6 @@ const updateUser = async (req, res) => {
     }
     return user;
   }
-  //  catch (error) {
-  //   handlserrors(error);
-  // }
 };
 
 // Delete user by ID
@@ -107,12 +94,7 @@ const deleteUser = async (req, res) => {
     if (deluser) {
       await User.deleteOne(deluser);
       res.status(201).send({ message: 'User successfully deleted' })
-    };    
-    // .catch(error =>
-    //   res
-    //     .status(400)
-    //     .json({ message: 'An error occurred', error: error.message })
-    // )
+    };
   };
 };
 
