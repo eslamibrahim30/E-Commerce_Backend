@@ -1,6 +1,6 @@
 const express = require('express');
 const Cart = require('../models/Cart');
-const Product = require('../models/BaseProduct');
+const Order = require('../models/Order');
 
 // Create order
 const createOrder = async (req, res) => {
