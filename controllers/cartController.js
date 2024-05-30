@@ -15,14 +15,14 @@ const addItemToCart = async (req, res) => {
     cart.items.push({ productId, quantity });
   }
   await cart.save();
-  res.send(cart);
+  res.status(200).send(cart);
 };
 
 // Get cart items
 const getCartItems = async (req, res) => {
   const { userId } = req.body;
   const cart = await Cart.findOne({ userId }).populate('items.productId');
-  res.send(cart);
+  res.status(200).send(cart);
 };
 
 // Remove item from cart
@@ -31,7 +31,7 @@ const removeItemFromCart =  async (req, res) => {
   let cart = await Cart.findOne({ userId });
   cart.items = cart.items.filter(item => item.productId != productId);
   await cart.save();
-  res.send(cart);
+  res.status(200).send(cart);
 };
 
 module.exports = {

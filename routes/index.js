@@ -20,7 +20,7 @@ router.delete('/product/delete', deleteProduct);
 
 router.post('/cart/add', authcheck, addItemToCart);
 router.get('/cart/items', authcheck, getCartItems);
-router.post('cart/remove', authcheck, removeItemFromCart);
+router.post('/cart/remove', authcheck, removeItemFromCart);
 
 router.post('/order/create', authcheck, createOrder);
 router.get('/orders', authcheck, getOrdersByUser);
