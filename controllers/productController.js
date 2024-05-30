@@ -1,114 +1,89 @@
-const User = require('../models/User');
+const product = require('../models/BaseProduct');
 const { authcheck } = require('../middlewares/auth');
-const bcrypt = require('bcryptjs');
 
-const handlserrors = (error) => {
-  if (error.code === 11000) {
-    rerurn('email Already exit')
-  }
-  throw(error.message);
-};
-
-// Create a new user
-const createUser = async (req, res) => {
-  if (authcheck) {
-    const { name, email, password } = req.body;
-    if (!email) {
-      res.status(400).json({ error: 'Missing email' });
-    }
-    if (!password) {
-      res.status(400).json({ error: 'Missing password' });
-    }
-    if (!name) {
-      res.status(400).json({ error: 'Missing password' });
-    } 
-    const user1 = await User.findOne({ email });
-    if (user1) {
-      return res.status(400).json({ error: 'Email already exists' });
-    }
-    const user = new User({ name, email, password });
-    await user.save();
-    res.status(200).json({ id: user._id, email: user.email, name: user.name});
+// Create a new product
+const createProduct = async (req, res) => {
+    if (authcheck) {
+        const { name, description, price, image, catogory, stock } = req.body;
+        if (!name) {
+            res.status(400).json({ error: 'Missing name' });
+        }
+        if (!price) {
+            res.status(400).json({ error: 'Missing price' });
+        }
+        if (!catogory) {
+            res.status(400).json({ error: 'Missing category' });
+        }
+        if (!stock) {
+            res.status(400).json({ error: 'Missing stock' });
+        }
+        const product1 = await product.findOne({ email });
+        if (product1) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+        const product = new product({ name, description, price, image, catogory, stock });
+        await product.save();
+        res.status(200).json({ 
+            id: product._id,
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            image: product.image,
+            catogory: product.catogory,
+            stock: product.stock
+        });
     }
     else (error) => {
-      handlserrors(error);
-  }
-};
-
-// Get all users
-const getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: handlserrors(error) });
-  }
-};
-
-// login
-const loginUser = async (req, res) => {
-  if (authcheck) {
-    const { name, email, password } = req.body;
-    if (!name || !password || !email) {
-      return res.status(400).json({
-        message: 'missing data',
-      })
+        handlserrors(error);
     }
-    const loginuser = await User.findOne({ email }).select('password');
-    if (!loginuser) {
-      res.status(400).json({ error: 'User not found' });
+};
+
+// Get all products
+const getProducts = async (req, res) => {
+    try {
+        const products = await product.find();
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ error: handlserrors(error) });
+    }
+};
+
+// Update product by ID
+const updateProduct = async (req, res) => {
+    if (authcheck) {
+        const { id, email, newData } = req.body
+        if (!newData) {
+            return res.status(400).json({ error: 'product ID and new data are required' });
+        }
+        const product = await product.findOneAndUpdate({ _id: id }, email, newData, { new: true });
+        if (!product) {
+            return res.status(404).json({ error: 'product not found' });
+        }
+        return product;
+    }
+};
+
+// Delete product by ID
+const deleteProduct = async (req, res) => {
+    if (authcheck) {
+        const { _id } = req.body
+        if (!_id) {
+            return res.status(400).json({ error: 'product ID is required' });
+        }
+        const delproduct = await product.findOne({ _id });
+        if (!delproduct) {
+            return res.status(400).json({ error: 'product not found' });
+        };
+        if (delproduct) {
+            await product.deleteOne(delproduct);
+            res.status(201).send({ message: 'product successfully deleted' })
+        };
     };
-    if (loginuser) {
-      const comp = await bcrypt.compare(password, loginuser.password);
-      if (comp) {
-        res.status(200).json({ message: 'Login successful', loginuser });
-      } else {
-        res.status(400).json({ message: 'password not match' });
-      }
-    }
-
-  };
-  
-};
-
-
-// Update user by ID
-const updateUser = async (req, res) => {
-  if (authcheck) {
-    const { id, email, newData } = req.body
-    if (!newData) {
-      return res.status(400).json({ error: 'User ID and new data are required' });
-    }
-    const user = await User.findOneAndUpdate({ _id: id }, email, newData, { new: true });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    return user;
-  }
-};
-
-// Delete user by ID
-const deleteUser = async (req, res) => {
-  if(authcheck) {
-    const { _id, email } = req.body
-    if (!_id || !email) {
-      return res.status(400).json({ error: 'User ID and email are required' });
-    }
-    const deluser = await User.findOne({ _id, email });
-    if (!deluser) {
-      return res.status(400).json({ error: 'User not found' });
-    };
-    if (deluser) {
-      await User.deleteOne(deluser);
-      res.status(201).send({ message: 'User successfully deleted' })
-    };    
-  };
 };
 
 module.exports = {
-  createUser,
-  loginUser,
-  getUsers,
-  updateUser,
-  deleteUser,
+    createProduct,
+    getProducts,
+    updateProduct,
+    deleteProduct,
 };
