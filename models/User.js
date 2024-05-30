@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const { isEmail } = require('validator');
+const jwt = require('jsonwebtoken');
+const { Token } = require('../models/Token');
+
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -27,7 +30,7 @@ const userSchema = new mongoose.Schema({
   },
   phoneNumber: { type: String },
 });
-// hashing Password
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
@@ -38,4 +41,25 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.validatePassword = async function validatePassword(data) {
   return bcrypt.compare(data, this.password);
 };
+userSchema.methods.generateAuthToken = async function(req, res) { 
+  const user = this;
+  const token = jwt.sign({_id:user._id.toHexString()}, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const salt = await bcrypt.genSalt(10);
+  const hashedToken = await bcrypt.hash(token, salt);
+  const expiresAt = new Date(Date.now() + 3600000); // 1 hour from now
+  let tokenDoc = await Token.findOne({ _id: user._id });
+  if (tokenDoc) {
+    tokenDoc.token = hashedToken;
+    tokenDoc.expiresAt = expiresAt;
+  } else {
+    tokenDoc = new Token({
+      _id: user._id,
+      token: hashedToken,
+      expiresAt,
+    });
+  }
+  await tokenDoc.save();
+  return token;
+}
+
 module.exports = mongoose.model('User', userSchema);
