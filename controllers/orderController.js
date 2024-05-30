@@ -1,4 +1,3 @@
-const express = require('express');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 
@@ -19,7 +18,7 @@ const createOrder = async (req, res) => {
 
 // Get orders by user
 const getOrdersByUser = async (req, res) => {
-    const { userId } = req.params;
+    const { userId } = req.body;
     const orders = await Order.find({ userId }).populate('items.productId');
     res.send(orders);
 };
